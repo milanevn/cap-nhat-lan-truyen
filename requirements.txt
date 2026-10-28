@@ -1,0 +1,5 @@
+grpcio>=1.66
+grpcio-tools>=1.66
+protobuf>=5.27
+psycopg[binary,pool]>=3.2
+PyYAML>=6.0

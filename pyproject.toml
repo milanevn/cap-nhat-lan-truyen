@@ -1,0 +1,11 @@
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+extend-exclude = ["node/rpc"]   # bỏ qua code sinh tự động
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B"]   # lỗi cú pháp, biến thừa, thứ tự import, bug thường gặp
+
+[tool.pytest.ini_options]
+testpaths = ["tests/unit"]
+pythonpath = ["."]              # để test import được node.xxx

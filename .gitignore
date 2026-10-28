@@ -1,0 +1,20 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.ruff_cache/
+
+# Code sinh từ proto (mỗi người tự sinh)
+node/rpc/*_pb2.py
+node/rpc/*_pb2_grpc.py
+node/rpc/*_pb2.pyi
+
+# Cấu hình cá nhân, IDE
+.env
+.vscode/
+.idea/
+
+# Dữ liệu chạy thử
+*.log
+snapshots/
