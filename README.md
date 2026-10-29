@@ -4,7 +4,21 @@
 
 ## Cài đặt môi trường
 
-(xem mục venv)
+Yêu cầu: Python 3.12, Docker Desktop.
+
+```bash
+python -m venv .venv
+.venv\Scripts\activate        # Windows
+pip install -r requirements-dev.txt
+```
+
+Kiểm tra trước khi push:
+
+```bash
+ruff format --check .
+ruff check .
+pytest
+```
 
 ## Chạy cụm 4 node
 
