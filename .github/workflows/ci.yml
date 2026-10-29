@@ -1,0 +1,63 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  kiem-tra:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: app
+          POSTGRES_PASSWORD: app
+          POSTGRES_DB: kho
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U app"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    env:
+      DATABASE_URL: postgresql://app:app@localhost:5432/kho
+
+    steps:
+      - name: Lấy mã nguồn
+        uses: actions/checkout@v4
+
+      - name: Cài Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements*.txt
+
+      - name: Cài thư viện
+        run: pip install -r requirements-dev.txt
+
+      - name: Nạp schema CSDL
+        if: hashFiles('db/schema.sql') != ''
+        run: psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f db/schema.sql
+
+      - name: Kiểm tra định dạng và lint
+        run: |
+          ruff format --check .
+          ruff check .
+
+      - name: Sinh code từ proto
+        if: hashFiles('proto/*.proto') != ''
+        run: >-
+          python -m grpc_tools.protoc -Inode/rpc=proto
+          --python_out=. --pyi_out=. --grpc_python_out=.
+          proto/*.proto
+
+      - name: Chạy unit test
+        run: pytest -v
